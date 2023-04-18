@@ -93,6 +93,22 @@ catch(err) {
 }
 });
 
+app.get("/pets", async (req, res) => {
+  const listaPets = await Pet.findAll();
+  res.json(listaPets);
+})
+
+app.get("/pets/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const pet = await Pet.findByPk(id);
+  if(pet) {
+    res.json(pet);
+  } else {
+    res.status(404).json({ error: "Pet não encontrado" })
+  }
+});
+
 app.post("/pets", async (req, res) => {
   const { nome, tipo, porte, dataNasc, clienteId } = req.body;
 
@@ -109,7 +125,8 @@ app.post("/pets", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Um erro aconteceu" })
   }
-})
+});
+
 
 // Escuta de eventos (listen)
 app.listen(3000, () => {
