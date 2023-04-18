@@ -93,6 +93,24 @@ catch(err) {
 }
 });
 
+app.post("/pets", async (req, res) => {
+  const { nome, tipo, porte, dataNasc, clienteId } = req.body;
+
+  try {
+      const cliente = await Cliente.findOne({ where: {id: clienteId } });
+    if(cliente) {
+      const pet = await Pet.create({ nome, tipo, porte, dataNasc, clienteId });
+      res.status(201).json(pet);
+    } else {
+      res.status(404).json({ error: "Cliente não encontrado" });
+    }
+  }
+  catch(err) {
+    console.error(err);
+    res.status(500).json({ error: "Um erro aconteceu" })
+  }
+})
+
 // Escuta de eventos (listen)
 app.listen(3000, () => {
   // Gerar as tabelas a partir do model
